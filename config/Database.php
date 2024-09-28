@@ -1,5 +1,11 @@
 <?php
 
+namespace config;
+
+use Exception;
+use PDOException;
+use PDO;
+
 class Database
 {
     private $host;
@@ -29,8 +35,7 @@ class Database
             return $pdo;
             
         } catch (PDOException $error) {
-            throw new Error('Error connection: ' . $error->getMessage());
+            throw new Exception('Error connection: ' . $error->getMessage());
         }
     }
-
 }

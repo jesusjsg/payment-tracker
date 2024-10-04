@@ -7,6 +7,6 @@ interface CRUDInterface {
     public function all();
     public function one($id);
     public function delete($id);
-    public function update($id);
+    public function update();
     public function from($array);
 }

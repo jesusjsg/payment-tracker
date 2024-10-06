@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Libs;
+
 class Session
 {
     private $sessionName = 'user';
@@ -13,10 +15,20 @@ class Session
 
     public function setCurrentSession($user)
     {
-        $_SESSION[$this->sessionName = $user];
+        $_SESSION[$this->sessionName] = $user;
     }
 
     public function getCurrentSession()
+    {
+        return $_SESSION[$this->sessionName];
+    }
+
+    public function setCurrentRole($user)
+    {
+        $_SESSION[$this->sessionName] = $user;
+    }
+
+    public function getCurrentRole()
     {
         return $_SESSION[$this->sessionName];
     }

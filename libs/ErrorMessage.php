@@ -24,4 +24,11 @@ class ErrorMessage
     {
         return $this->errorList[$hash];
     }
+
+    public function existsKey($key)
+    {
+        if (array_key_exists($key, $this->errorList)) {
+            return true;
+        }
+    }
 }

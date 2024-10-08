@@ -18,7 +18,7 @@ class App
             $fileController = 'controllers/LoginController.php';
             require_once $fileController;
             $controller = new LoginController();
-            $controller->loadModel('login');
+            $controller->loadModel('LoginController'); // controller class is called here
             $controller->render();
             return false;
         }

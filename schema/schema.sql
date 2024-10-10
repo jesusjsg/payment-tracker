@@ -20,7 +20,6 @@ create table if not exists expenses (
 
 create table if not exists users (
     user_id integer unsigned primary key auto_increment,
-    role_id integer unsigned,
     username varchar(100) unique,
     password varchar(500),
     name varchar(100),

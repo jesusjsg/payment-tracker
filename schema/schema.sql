@@ -14,7 +14,7 @@ create table if not exists expenses (
     user_id integer unsigned,
     expense_name varchar(200) unique,
     amount float,
-    create_at timestamp not null default current_timestamp,
+    created_at timestamp not null default current_timestamp,
     modified_at timestamp not null default current_timestamp on update current_timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -25,7 +25,7 @@ create table if not exists users (
     name varchar(100),
     budget float,
     photo varchar(300),
-    create_at timestamp not null default current_timestamp,
+    created_at timestamp not null default current_timestamp,
     modified_at timestamp not null default current_timestamp on update current_timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

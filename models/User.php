@@ -99,6 +99,7 @@ class User extends Model implements CRUDInterface
 
         } catch (PDOException $error) {
             print_r('Error to get the user id: ' . $error);
+            return false;
         }
     }
 
@@ -165,17 +166,6 @@ class User extends Model implements CRUDInterface
 
         } catch (PDOException $error) {
             print_r('Error to validate username: ' . $error);
-            return false;
-        }
-    }
-
-    protected function getByUsername($username)
-    {
-        try {
-            
-
-        } catch (PDOException $error) {
-            print_r('Error to get the user by the username: ' . $error);
             return false;
         }
     }

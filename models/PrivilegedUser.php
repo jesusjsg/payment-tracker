@@ -16,28 +16,32 @@ class PrivilegedUser extends User
         parent::__construct();
     }
 
-    public function getByUsername($username)
+    public function one($user_id)
     {
         try {
-            $query = $this->prepare('select user_id, username, name, created_at from users where username = :username');
+            $query = $this->prepare('select * from users where user_id = :user_id');
             $query->execute([
-                ':username' => $username,
+                ':user_id' => $user_id,
             ]);
-            $result = $query->fetchAll();
 
-            if(!empty($result)) {
-                $privilegedUser = new PrivilegedUser();
-                $privilegedUser->id = $result[0]['user_id'];
-                $privilegedUser->username = $username;
-                $privilegedUser->name = $result[0]['name'];
-                $privilegedUser->budget = $result[0]['budget'];
-                $privilegedUser->photo = $result[0]['photo'];
-                $privilegedUser->createdAt = $result[0]['created_at'];
-                $privilegedUser->updatedAt = $result[0]['modified_at'];
+            $userData = $query->fetch(PDO::FETCH_ASSOC);
+            
+            if (!empty($userData)) {
+                $privilageUser = new PrivilegedUser();
+                $privilageUser->setId($userData['user_id']);
+                $privilageUser->setUsername($userData['username']);
+                $privilageUser->setPassword($userData['password']);
+                $privilageUser->setName($userData['name']);
+                $privilageUser->setBudget($userData['budget']);
+                $privilageUser->setPhoto($userData['photo']);
+                $privilageUser->setCreatedAt($userData['created_at']);
+                $privilageUser->setUpdateAt($userData['modified_at']);
+                $privilageUser->initRoles();
+                return $privilageUser;
             }
 
         } catch (PDOException $error) {
-            print_r('Error to get the username: ' . $error);
+            print_r('Error to get the user by id: ' . $error);
             return false;
         }
     }

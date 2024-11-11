@@ -9,3 +9,7 @@ alter table role_permissions
 alter table user_roles
     add constraint user_id foreign key (user_id) references users (user_id),
     add constraint role_id foreign key (role_id) references roles (role_id);
+
+alter table views_permissions
+    add constraint view_id foreign key (view_id) references views (view_id),
+    add constraint view_permission foreign key (permission_id) references permissions (permission_id);

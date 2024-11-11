@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Core;
 
 use Exception;
@@ -8,11 +10,11 @@ use PDO;
 
 class Database
 {
-    private $host;
-    private $db;
-    private $user;
-    private $password;
-    private $charset;
+    private string $host;
+    private string $db;
+    private string $user;
+    private string $password;
+    private string $charset;
 
     public function __construct()
     {
@@ -23,7 +25,7 @@ class Database
         $this->charset = $_ENV['DB_CHARSET'];
     }
 
-    public function connection()
+    public function connection(): PDO
     {
         try {
             $connection = 'mysql:host=' . $this->host . ';dbname=' . $this->db . ';charset=' . $this->charset;

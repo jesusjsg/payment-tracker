@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Core;
 
 use App\Controllers\ErrorController;
@@ -9,6 +11,12 @@ class App
 {
     function __construct()
     {
+        $this->init();
+    }
+
+    private function init(): void
+    {
+
         $url = isset($_GET['url']) ? $_GET['url'] : '';
         $url = rtrim($url, '/');
         $url = explode('/', $url);
@@ -20,7 +28,7 @@ class App
             $controller = new LoginController();
             $controller->loadModel('LoginController'); // controller class is called here
             $controller->render();
-            return false;
+            return;
         }
 
         $fileController = 'controllers/' . $url[0] . '.php';

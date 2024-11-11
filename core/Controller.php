@@ -1,20 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Core;
 
 use App\Core\View;
 
 class Controller
 {
-    public $view;
-    public $model;
+    public View $view;
+    public string $model;
 
     public function __construct()
     {
         $this->view = new View();
     }
 
-    public function loadModel($model)
+    public function loadModel(string $model): void
     {
         $url = 'models/' . $model . '.php';
         if (file_exists($url)) {
@@ -25,7 +27,7 @@ class Controller
         }
     }
 
-    public function existsPost($params)
+    public function existsPost(array $params): bool
     {
         foreach ($params as $param) {
             if (!isset($_POST[$param])) {
@@ -36,7 +38,7 @@ class Controller
         return true;
     }
 
-    public function existsGet($params)
+    public function existsGet(array $params): bool
     {
         foreach ($params as $param) {
             if (!isset($_GET[$param])) {
@@ -47,7 +49,7 @@ class Controller
         return true;
     }
 
-    public function redirect($route, $alerts)
+    public function redirect(string $route, array $alerts): void
     {
         $data = [];
         $params = '';
@@ -64,12 +66,12 @@ class Controller
         header('Location: ' . URL . $route . $params);
     }
 
-    public function getPost($name)
+    public function getPost(string $name): string
     {
         return $_POST[$name];
     }
 
-    public function getGet($name)
+    public function getGet(string $name): string
     {
         return $_GET[$name];
     }

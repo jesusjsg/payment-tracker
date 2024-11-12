@@ -1,6 +1,5 @@
 .htaccess
 .env
 vendor/
-composer.lock
 php-error.log
 *.log

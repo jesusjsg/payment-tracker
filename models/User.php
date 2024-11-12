@@ -9,39 +9,31 @@ use PDOException;
 
 class User extends Model implements CRUDInterface
 {
-    public $id;
-    public $username;
-    public $name;
-    public $role;
-    private $password;
-    public $budget;
-    public $photo;
-    public $createdAt;
-    public $updatedAt;
-
-    public function __construct()
-    {
+    public function __construct(
+        private int $id = 0,
+        private string $username = '',
+        private string $firstName = '',
+        private string $lastName = '',
+        private string $password = '',
+        private string $email = '',
+        private string $photo = '',
+        private string $createdAt = '',
+        private string $updatedAt = '',
+    ) {  
         parent::__construct();
-
-        $this->username = '';
-        $this->password = '';
-        $this->budget = 0.0;
-        $this->name = '';
-        $this->photo = '';
-        $this->createdAt = null;
-        $this->updatedAt = null;
     }
 
-    public function save()
+    public function save(): bool
     {
         try {
-            $query = $this->prepare('insert into users (username, password, budget, photo, name) values (:username, :password, :role, :budget, :photo, :name)');
+            $query = $this->prepare('insert into users (username, password, first_name, last_name, email, photo) values (:username, :first_name, :last_name, :password, :role, :email, :photo)');
             $query->execute([
-                ':username'  =>  $this->username,
-                ':password'  =>  $this->password,
-                ':budget'    =>  $this->budget,
-                ':photo'     =>  $this->photo,
-                ':name'      =>  $this->name,
+                ':username'    => $this->username,
+                ':first_name'  => $this->firstName,
+                ':last_name'   => $this->lastName,
+                ':password'    => $this->password,
+                ':email'       => $this->email,
+                ':photo'       => $this->photo,
             ]);
             return true;
 
@@ -51,7 +43,7 @@ class User extends Model implements CRUDInterface
         }
     }
 
-    public function all()
+    public function all(): array
     {
         $data = [];
         try {
@@ -60,11 +52,10 @@ class User extends Model implements CRUDInterface
             while ($pointer = $query->fetch(PDO::FETCH_ASSOC)) {
                 $item = new User();
                 $item->setId($pointer['id']);
-                $item->setBudget($pointer['budget']);
-                $item->setName($pointer['name']);
                 $item->setUsername($pointer['username']);
-                $item->setPhoto($pointer['photo']);
-                $item->setPassword($pointer['password'], false);
+                $item->setFirstName($pointer['first_name']);
+                $item->setLastName($pointer['last_name']);
+                $item->setEmail($pointer['email']);
                 $item->setCreatedAt($pointer['createdAt']);
                 $item->setUpdateAt($pointer['updatedAt']);
                 array_push($data, $item);
@@ -76,7 +67,7 @@ class User extends Model implements CRUDInterface
         }
     }
 
-    public function one($id)
+    public function one(int $id): User
     {
         try {
             $query = $this->prepare('select * from users where id = :id');
@@ -87,9 +78,10 @@ class User extends Model implements CRUDInterface
             if ($userData) {
                 $user = new User();
                 $user->setId($userData['id']);
-                $user->setBudget($userData['budget']);
-                $user->setName($userData['name']);
                 $user->setUsername($userData['username']);
+                $user->setFirstName($userData['first_name']);
+                $user->setLastName($userData['last_name']);
+                $user->setLastName($userData['email']);
                 $user->setPhoto($userData['photo']);
                 $user->setPassword($userData['password']);
                 $user->setCreatedAt($userData['createdAt']);
@@ -103,14 +95,13 @@ class User extends Model implements CRUDInterface
         }
     }
 
-    public function delete($id)
+    public function delete(int $id): bool
     {
         try {
             $query = $this->prepare('delete from users where id = :id');
             $query->execute([
                 ':id' => $id,
             ]);
-
             return true;
 
         } catch (PDOException $error) {
@@ -119,16 +110,15 @@ class User extends Model implements CRUDInterface
         }
     }
 
-    public function update()
+    public function update(int $id): bool // pass the id as argument to get the correct user
     {
         try {
-            $query = $this->prepare('update users set username = :username, password = :password, photo = :photo, budget = :budget, name = :name where id = :id');
+            $query = $this->prepare('update users set username = :username, password = :password, first_name = :first_name'); // complete the query to update user' data
             $query->execute([
                 ':id'       => $this->id,
                 ':username' => $this->username,
                 ':password' => $this->password,
                 ':photo'    => $this->photo,
-                ':budget'   => $this->budget,
                 ':name'     => $this->name,
             ]);
 
@@ -140,17 +130,16 @@ class User extends Model implements CRUDInterface
         }
     }
 
-    public function from($array)
+    public function from($array): void
     {
         $this->id       = $array['id'];
         $this->username = $array['username'];
         $this->password = $array['password'];
         $this->photo    = $array['photo'];
-        $this->budget   = $array['budget'];
         $this->name     = $array['name'];
     }
 
-    public function exists($username)
+    public function exists(string $username)
     {
         try {
             $query = $this->prepare('select username from users where username = :username');
@@ -170,7 +159,7 @@ class User extends Model implements CRUDInterface
         }
     }
 
-    public function comparePass($password, $userId) {
+    public function comparePass(string $password, int $userId) {
         try {
             $user = $this->one($userId);
             return password_verify($password, $user->getPassword());
@@ -183,89 +172,25 @@ class User extends Model implements CRUDInterface
 
 
     //implementation of setters
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    public function setBudget($budget)
-    {
-        $this->budget = $budget;
-    }
-
-    public function setPhoto($photo)
-    {
-        $this->photo = $photo;
-    }
-
-    public function setPassword($password)
-    {
-        $this->password = $this->getHashedPass($password);
-    }
-
-    public function setUsername($username)
-    {
-        $this->username = $username;
-    }
-
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function setUpdateAt($updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-    }
+    public function setId(int $id)                      {$this->id = $id;}
+    public function setUsername(string $username)       {$this->username = $username;}
+    public function setFirstName(string $firstName)     {$this->firstName = $firstName;}
+    public function setLastName(string $lastName)       {$this->lastName = $lastName;}
+    public function setPassword(string $password)       {$this->password = $this->getHashedPass($password);}
+    public function setEmail(string $email)             {$this->email = $email;}
+    public function setPhoto(string $photo)             {$this->photo = $photo;}
+    public function setCreatedAt(string $createdAt)     {$this->createdAt = $createdAt;}
+    public function setUpdateAt(string $updatedAt)      {$this->updatedAt = $updatedAt;}
 
     //Implementation of getters
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    public function getPhoto()
-    {
-        return $this->photo;
-    }
-
-    public function getBudget()
-    {
-        return $this->budget;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    private function getHashedPass($password)
-    {
-        return password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);
-    }
-
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
+    public function getId()                             {return $this->id;}
+    public function getUsername()                       {return $this->username;}
+    public function getFirstName()                      {return $this->firstName;}
+    public function getLastName()                       {return $this->lastName;}
+    public function getPassword()                       {return $this->password;}
+    public function getEmail()                          {return $this->email;}
+    public function getPhoto()                          {return $this->photo;}
+    private function getHashedPass(string $password)    {return password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);}
+    public function getCreatedAt()                      {return $this->createdAt;}
+    public function getUpdatedAt()                      {return $this->updatedAt;}
 }

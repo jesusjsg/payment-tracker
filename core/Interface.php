@@ -3,10 +3,10 @@
 namespace App\Core;
 
 interface CRUDInterface {
-    public function save();
-    public function all();
+    public function save(): bool;
+    public function all(): array;
     public function one(int $id): Object;
     public function delete(int $id): bool;
-    public function update();
+    public function update(int $id): bool;
     public function from(array $array): void;
 }

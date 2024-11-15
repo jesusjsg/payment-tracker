@@ -10,20 +10,13 @@ use PDO;
 
 class Database
 {
-    private string $host;
-    private string $db;
-    private string $user;
-    private string $password;
-    private string $charset;
-
-    public function __construct()
-    {
-        $this->host = $_ENV['DB_HOST'];
-        $this->db = $_ENV['DB_NAME'];
-        $this->user = $_ENV['DB_USER'];
-        $this->password = $_ENV['DB_PASSWORD'];
-        $this->charset = $_ENV['DB_CHARSET'];
-    }
+    public function __construct(
+        private string $host = $_ENV['DB_HOST'],
+        private string $db = $_ENV['DB_NAME'],
+        private string $user = $_ENV['DB_USER'],
+        private string $password = $_ENV['DB_PASSWORD'],
+        private string $charset = $_ENV['DB_CHARSET']
+    ) {}
 
     public function connection(): PDO
     {

@@ -6,15 +6,13 @@ namespace App\Core;
 
 use App\Core\Database;
 use PDOException;
-use Exception;
 use PDOStatement;
 
 class Model
 {
-    private Database $db;
-
-    public function __construct()
-    {
+    public function __construct(
+        private Database $db = new Database()
+    ) {
         $this->db = new Database();
     }
 

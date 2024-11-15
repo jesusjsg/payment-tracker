@@ -8,5 +8,5 @@ interface CRUDInterface {
     public function one(int $id): Object;
     public function delete(int $id): bool;
     public function update(int $id): bool;
-    public function from(array $array): void;
+    //public function from(array $array): void;
 }

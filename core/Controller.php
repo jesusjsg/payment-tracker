@@ -8,13 +8,10 @@ use App\Core\View;
 
 class Controller
 {
-    public View $view;
-    public string $model;
-
-    public function __construct()
-    {
-        $this->view = new View();
-    }
+    public function __construct(
+        public View $view = new View(),
+        public string $model = '',
+    ) {}
 
     public function loadModel(string $model): void
     {

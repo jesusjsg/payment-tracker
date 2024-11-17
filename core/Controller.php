@@ -15,7 +15,7 @@ class Controller
 
     public function loadModel(string $model): void
     {
-        $url = 'models/' . $model . '.php';
+        $url = 'models/.'. $model . '.php';
         if (file_exists($url)) {
             require_once $url;
 
@@ -28,7 +28,7 @@ class Controller
     {
         foreach ($params as $param) {
             if (!isset($_POST[$param])) {
-                print_r('Dont exist the param of existsPost ->' . $param);
+                error_log('existPost -> Dont exist the param of existsPost ->' . $param);
                 return false;
             }
         }
@@ -39,7 +39,7 @@ class Controller
     {
         foreach ($params as $param) {
             if (!isset($_GET[$param])) {
-                print_r('Dont exist the param of existsGet -> ' . $param);
+                error_log('existGet -> Dont exist the param of existsGet -> ' . $param);
                 return false;
             }
         }

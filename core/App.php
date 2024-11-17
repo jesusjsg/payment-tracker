@@ -22,7 +22,7 @@ class App
         $url = explode('/', $url);
 
         if (empty($url[0])) {
-            error_log('No hay ningun controlador');
+            error_log('App -> There is no controller');
             $fileController = 'controllers/LoginController.php';
             require_once $fileController;
             $controller = new LoginController();
@@ -31,7 +31,7 @@ class App
             return;
         }
 
-        $fileController = 'controllers/' . $url[0] . '.php';
+        $fileController = "controllers/{$url[0]}.php"; 
 
         if (file_exists($fileController)) {
             require_once $fileController;

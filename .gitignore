@@ -1,5 +1,4 @@
 .htaccess
 .env
 vendor/
-php-error.log
 *.log

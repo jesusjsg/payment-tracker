@@ -36,7 +36,6 @@ create table if not exists user_roles (
     primary key (user_id, role_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
 create table if not exists views (
     view_id integer unsigned primary key,
     view_name varchar(50) not null unique 

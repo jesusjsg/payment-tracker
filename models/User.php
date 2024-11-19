@@ -9,7 +9,7 @@ use PDOException;
 
 class User extends Model implements CRUDInterface
 {
-    public function __construct(
+    public function __construct( // properties promotion
         private int $id = 0,
         private string $username = '',
         private string $firstName = '',
@@ -26,12 +26,12 @@ class User extends Model implements CRUDInterface
     public function save(): bool
     {
         try {
-            $query = $this->prepare('insert into users (username, password, first_name, last_name, email, photo) values (:username, :first_name, :last_name, :password, :role, :email, :photo)');
+            $query = $this->prepare('INSERT INTO users (username, password, first_name, last_name, email, photo) VALUES (:username, :first_name, :last_name, :password,  :email, :photo)');
             $query->execute([
                 ':username'    => $this->username,
+                ':password'    => $this->password,
                 ':first_name'  => $this->firstName,
                 ':last_name'   => $this->lastName,
-                ':password'    => $this->password,
                 ':email'       => $this->email,
                 ':photo'       => $this->photo,
             ]);
@@ -47,7 +47,7 @@ class User extends Model implements CRUDInterface
     {
         $data = [];
         try {
-            $query = $this->query('select * from users');
+            $query = $this->query('SELECT * FROM users');
 
             while ($pointer = $query->fetch(PDO::FETCH_ASSOC)) {
                 $item = new User();
@@ -70,9 +70,9 @@ class User extends Model implements CRUDInterface
     public function one(int $id): User
     {
         try {
-            $query = $this->prepare('select * from users where id = :id');
+            $query = $this->prepare('SELECT * FROM users WHERE id = :id');
             $query->execute([
-                'id' => $id,
+                ':id' => $id,
             ]);
             $userData = $query->fetch(PDO::FETCH_ASSOC);
             if ($userData) {
@@ -83,9 +83,6 @@ class User extends Model implements CRUDInterface
                 $user->setLastName($userData['last_name']);
                 $user->setLastName($userData['email']);
                 $user->setPhoto($userData['photo']);
-                $user->setPassword($userData['password']);
-                $user->setCreatedAt($userData['createdAt']);
-                $user->setUpdateAt($userData['updatedAt']);
                 return $user;
             }
 
@@ -98,7 +95,7 @@ class User extends Model implements CRUDInterface
     public function delete(int $id): bool
     {
         try {
-            $query = $this->prepare('delete from users where id = :id');
+            $query = $this->prepare('DELETE FROM users WHERE id = :id');
             $query->execute([
                 ':id' => $id,
             ]);
@@ -110,18 +107,19 @@ class User extends Model implements CRUDInterface
         }
     }
 
-    public function update(int $id): bool // pass the id as argument to get the correct user
+    public function update(int $id): bool
     {
         try {
-            $query = $this->prepare('update users set username = :username, password = :password, first_name = :first_name'); // complete the query to update user' data
+            $query = $this->prepare('UPDATE users SET username = :username, password = :password, first_name = :first_name, last_name = :last_name, email = :email, photo = :photo WHERE id = :id');
             $query->execute([
-                ':id'       => $this->id,
-                ':username' => $this->username,
-                ':password' => $this->password,
-                ':photo'    => $this->photo,
-                ':name'     => $this->name,
+                ':id'           => $this->id,
+                ':username'     => $this->username,
+                ':password'     => $this->password,
+                ':first_name'   => $this->firstName,
+                ':last_name'    => $this->lastName,
+                ':email'        => $this->email,
+                ':photo'        => $this->photo,
             ]);
-
             return true;
 
         } catch (PDOException $error) {
@@ -130,21 +128,12 @@ class User extends Model implements CRUDInterface
         }
     }
 
-    public function from($array): void
-    {
-        $this->id       = $array['id'];
-        $this->username = $array['username'];
-        $this->password = $array['password'];
-        $this->photo    = $array['photo'];
-        $this->name     = $array['name'];
-    }
-
     public function exists(string $username)
     {
         try {
-            $query = $this->prepare('select username from users where username = :username');
+            $query = $this->prepare('SELECT username FROM users WHERE username = :username');
             $query->execute([
-                'username' => $username,
+                ':username' => $username,
             ]);
             
             if ($query->rowCount() > 0) {

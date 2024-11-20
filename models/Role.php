@@ -13,7 +13,10 @@ use PDOException;
 class Role extends Model
 {
     public function __construct(
-        public array $permissions = [], 
+        public int $role_id = 0,
+        public int $user_id = 0,
+        public string $role_name = '',
+        public array $permissions = [],
     ) {}
 
     public function getRolePermissions(int $role_id): Role
@@ -67,6 +70,37 @@ class Role extends Model
 
     public function saveRole(): bool
     {
-        
+        try {
+            $query = $this->prepare('INSERT INTO roles (role_name) VALUES (:role_name)');
+            $query->execute([
+                ':role_name' => $this->role_name,
+            ]);
+            return true;
+
+        } catch (PDOException $error) {
+            error_log('Role -> saveRole -> Error to save the role: ' . $error);
+            return false;
+        }
+    }
+
+    public function saveRolePermission(int $role_id, array $permission_ids): bool
+    {
+        try {
+            $values = [];
+            foreach ($permission_ids as $per_id) {
+                $value = '(' . $role_id . ',' . $per_id . ')';
+                array_push($values, $value);
+            }
+            $totalValues = implode(',', $values);
+
+            $query = $this->prepare('INSERT INTO role_permissions (role_id, permission_id) VALUES ' . $totalValues);
+            $query->execute();
+            return $query->rowCount();
+
+
+        } catch (PDOException $error) {
+            error_log('Role -> saveRolePermission -> Error to save the role permission: ' . $error);
+            return false;
+        }
     }
 }
